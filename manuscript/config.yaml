@@ -3,16 +3,19 @@
 # mechanisms from AutoScientists (arXiv:2605.28655), framed honestly as a
 # noise-robustness testbed rather than a performance claim.
 #
-# This file links manuscript prose to the execution layer. It is loaded by
-# `yaml.safe_load` inside `infrastructure/rendering/_pdf_combined_renderer.py`
-# (manuscript metadata) and read by the project's analysis scripts.
+# This file supplies manuscript metadata (title, authors, DOIs) consumed by the
+# renderer (`infrastructure/rendering/_pdf_combined_renderer.py`). The
+# `experiment:` block below is a human-readable mirror of the code defaults; it is
+# NOT loaded by the analysis scripts (they construct SearchConfig/SyntheticObjective
+# directly) — the test `test_config_yaml_experiment_block_mirrors_code_defaults`
+# binds the two so the mirror cannot drift.
 
 # Consumed by: `infrastructure/rendering/pdf_renderer.py` and `infrastructure/reporting/pipeline_report_model.py`
 paper:
   title: "A Deterministic Testbed for Self-Organizing Agent-Team Coordination"
   subtitle: "Ablatable Mechanisms and Measurable Noise-Robustness under a Matched Experiment Budget"
-  version: "1.0.1"
-  date: "" # Auto-generated via `infrastructure/validation/output/validator.py` if empty
+  version: "1.0.2"
+  date: "2026-06-26"
 
 # Consumed by: `infrastructure.publishing.extract_publication_metadata` (in `infrastructure/publishing/metadata.py`)
 authors:
@@ -25,7 +28,7 @@ authors:
 # Consumed by: `infrastructure.publishing.publish_to_zenodo` (in `infrastructure/publishing/platforms.py`)
 publication:
   doi: "10.5281/zenodo.20533669"  # Concept DOI — stable citation
-  version_doi: "10.5281/zenodo.20693001"  # Latest Zenodo deposit
+  version_doi: "10.5281/zenodo.20693001" # Latest Zenodo deposit
   version_record: "https://zenodo.org/records/20693001"
   github_repository: "docxology/template_autoscientists"
   year: "2026"
@@ -66,8 +69,11 @@ testing:
   max_infra_test_failures: 0
   max_project_test_failures: 0
 
-# Experimental parameters — mirror SearchConfig defaults consumed by the
-# analysis scripts (run_search_comparison.py, run_ablation.py).
+# Experimental parameters — a documentation mirror of the code defaults:
+# budget/num_teams/confirm_seeds/base_seed/stagnation_window/dead_end_threshold/sigma
+# are SearchConfig defaults; dimensions/noise_scale/ripple are SyntheticObjective
+# defaults. The analysis scripts (run_search_comparison.py, run_ablation.py) do not
+# read this file — they build those objects directly; the mirror is pinned by tests.
 experiment:
   budget: 60
   num_teams: 3

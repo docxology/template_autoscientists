@@ -1,14 +1,5 @@
 # AutoScientists — Coordination-Mechanism Testbed Exemplar
 
-> **Public exemplar — double-published.** This repository is a standalone
-> snapshot of the `template_autoscientists` exemplar from the
-> [docxology/template](https://github.com/docxology/template) reproducible-research
-> scaffold (the canonical development home). It is archived on Zenodo:
-> concept DOI [10.5281/zenodo.20533669](https://doi.org/10.5281/zenodo.20533669)
-> (latest version [10.5281/zenodo.20533670](https://doi.org/10.5281/zenodo.20533670)).
-> Released under the MIT License.
-
-
 A deterministic, ablatable reference implementation of the five coordination
 mechanisms from Gao, Fang & Zitnik, *AutoScientists: Self-Organizing Agent Teams
 for Long-Running Scientific Experimentation* (arXiv:2605.28655): a shared
@@ -18,6 +9,34 @@ noise-band confirmation, and stagnation-driven team reorganization.
 It is a **microscope on the coordination primitives**, not a reproduction of the
 full agentic system. The deterministic core is fully tested; a live
 `HermesProposer` (Ollama) drops into the same loop for an opt-in agentic demo.
+
+## Run via the template monorepo
+
+This exemplar lives at `projects/templates/template_autoscientists/` in the public
+[docxology/template](https://github.com/docxology/template) repository.
+**Tests, analysis, PDF rendering, and CI all run through that monorepo** —
+clone it, run `uv sync` at the repository root, then:
+
+```bash
+./run.sh --project templates/template_autoscientists --pipeline --core-only
+# or: uv run python scripts/execute_pipeline.py --project templates/template_autoscientists --core-only
+```
+
+Several exemplars also publish standalone GitHub/Zenodo releases for citation;
+those mirrors are outputs of this pipeline. The monorepo remains the canonical
+build and render surface.
+
+## When to use this template
+
+Use this template when you need to **isolate and measure agent-coordination
+mechanisms**: coordinated teams vs single-thread baselines under matched
+budgets, deterministic ablation studies, and honest per-mechanism effect
+reporting (including nulls). Choose
+[`template_autoresearch_project`](../template_autoresearch_project/) instead
+if your focus is end-to-end AutoResearch **loop infrastructure** (evidence
+registries, review gates, artifact integrity) rather than coordination
+primitives. Full roster:
+[`projects/AGENTS.md`](../../AGENTS.md#permanent-canonical-exemplars-and-optional-search-add-on).
 
 ## What it honestly shows
 
@@ -54,7 +73,8 @@ uv run pytest projects/templates/template_autoscientists/tests -m "not requires_
 ## Prerequisites & verification
 
 **Test/coverage gate (authoritative per-project command).** Exit code 0 alone is
-not proof — confirm tests collected > 0 and coverage is 100% on `src/`:
+not proof — confirm tests collected > 0 and coverage clears the 90% `src/` gate
+(read the `TOTAL` line of the report for the live figure):
 
 ```bash
 uv run pytest projects/templates/template_autoscientists/tests \
@@ -103,3 +123,10 @@ genuine objects exercising real code paths.
 
 See [AGENTS.md](AGENTS.md) for module-level technical documentation and the
 manuscript under [`manuscript/`](manuscript/) for the full write-up.
+
+## Template integrity
+
+- Forward backlog: [`TODO.md`](TODO.md).
+- Copy-and-customize config: [`manuscript/config.yaml.example`](manuscript/config.yaml.example).
+- Project validation: `uv run pytest projects/templates/template_autoscientists/tests/ --cov=projects/templates/template_autoscientists/src --cov-fail-under=90`.
+- Repo drift validation: `uv run python scripts/check_template_drift.py --strict`.
