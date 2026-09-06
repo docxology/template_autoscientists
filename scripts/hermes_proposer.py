@@ -3,11 +3,20 @@
 from __future__ import annotations
 
 import json
+import sys
 from collections.abc import Sequence
+from pathlib import Path
 from typing import TYPE_CHECKING
 
-from src.agents import _extract_json
-from src.state import Proposal, SharedState
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = PROJECT_ROOT.parents[2]
+for path in (PROJECT_ROOT, PROJECT_ROOT / "src", REPO_ROOT):
+    text = str(path)
+    if text not in sys.path:
+        sys.path.insert(0, text)
+
+from src.agents import _extract_json  # noqa: E402
+from src.state import Proposal, SharedState  # noqa: E402
 
 if TYPE_CHECKING:
     from infrastructure.llm.core.client import LLMClient

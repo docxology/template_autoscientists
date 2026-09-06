@@ -1,4 +1,4 @@
-# `manuscript/` — Agent Guide
+# `docs/manuscript/`
 
 The paper about the coordination testbed.
 

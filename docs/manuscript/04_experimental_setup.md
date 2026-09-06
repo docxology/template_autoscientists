@@ -12,7 +12,7 @@ The configurations compared in @sec:results correspond directly to `SearchConfig
 - **Single-thread baseline** — `SearchConfig.single_thread_baseline()`: $1$ team, confirmation on (so the baseline is itself noise-honest), all structural coordination off.
 - **Ablations** — the full configuration with exactly one mechanism switched off, generated via `dataclasses.replace`.
 
-Confirmation averages each candidate over seeds $(101, 202, 303)$ and tests against a $\sigma = 2$ noise band; the primary evaluation seed is $7$; the stagnation window is $10$ experiments; a direction is retired after $3$ consecutive non-improving experiments. These values are the `SearchConfig` defaults and are echoed in `manuscript/config.yaml`.
+Confirmation averages each candidate over seeds $(101, 202, 303)$ and tests against a $\sigma = 2$ noise band; the primary evaluation seed is $7$; the stagnation window is $10$ experiments; a direction is retired after $3$ consecutive non-improving experiments. These values are the `SearchConfig` defaults and are echoed in `docs/manuscript/config.yaml`.
 
 ## Proposer
 

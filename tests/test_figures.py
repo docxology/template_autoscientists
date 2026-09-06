@@ -12,7 +12,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import matplotlib
-from infrastructure.validation.content.figure_validator import validate_figure_registry
+import pytest
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
@@ -140,6 +140,11 @@ def test_comparison_figure_linestyle_matches_caption() -> None:
 
 
 def test_figure_registry_validates_manuscript_references(tmp_path: Path) -> None:
+    pytest.importorskip("infrastructure.validation.content.figure_validator")
+    from infrastructure.validation.content.figure_validator import (  # noqa: E402
+        validate_figure_registry,
+    )
+
     objective = SyntheticObjective(dimensions=4, noise_scale=0.02)
     proposer = DeterministicProposer()
     coordinated = run_search(objective, proposer, SearchConfig(budget=30))
@@ -150,7 +155,7 @@ def test_figure_registry_validates_manuscript_references(tmp_path: Path) -> None
     write_comparison_figure(coordinated, baseline, tmp_path / "search_comparison.png")
     registry = write_figure_registry(tmp_path)
 
-    ok, issues = validate_figure_registry(registry, Path(__file__).resolve().parent.parent / "manuscript")
+    ok, issues = validate_figure_registry(registry, Path(__file__).resolve().parent.parent / "docs" / "manuscript")
 
     assert ok, issues
 

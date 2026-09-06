@@ -13,10 +13,9 @@
 
 ## Workflow
 
-Commands below are fully qualified relative to the repo root (the monorepo
-root above `projects/`), matching README.md and TODO.md.
+Commands below are relative to this repository's root, matching README.md.
 
 1. Edit coordination logic in `src/`.
-2. Regenerate ablation results: `uv run python projects/templates/template_autoscientists/scripts/run_ablation.py`.
-3. Verify: `uv run pytest projects/templates/template_autoscientists/tests/ --cov=projects/templates/template_autoscientists/src --cov-fail-under=90`.
-4. Regenerate outputs (run from the repo root — `scripts/pipeline/` is a repo-root path, not a project-local one): `uv run python scripts/pipeline/stage_02_analysis.py --project templates/template_autoscientists`.
+2. Regenerate ablation results: `uv run python scripts/run_ablation.py`.
+3. Verify: `uv run pytest tests/ --cov=src --cov-fail-under=90`.
+4. Regenerate monorepo pipeline outputs (template monorepo only — `scripts/pipeline/` is a monorepo-root path, not project-local; this repository has no `scripts/pipeline/`): `uv run python scripts/pipeline/stage_02_analysis.py --project templates/template_autoscientists`.

@@ -1,4 +1,4 @@
-"""Pin every headline magnitude in manuscript/03_results.md to actual computation.
+"""Pin every headline magnitude in docs/manuscript/03_results.md to actual computation.
 
 This is the load-bearing test for an HONEST-TESTBED exemplar: the manuscript's
 entire contribution is that its quoted numbers are exactly what ``src/`` produces.
@@ -23,14 +23,14 @@ from src.comparison import build_comparison_payload, build_objective, run_compar
 from src.objective import SyntheticObjective
 from src.search import SearchConfig, run_search
 
-_CONFIG_YAML = Path(__file__).resolve().parent.parent / "manuscript" / "config.yaml"
+_CONFIG_YAML = Path(__file__).resolve().parent.parent / "docs" / "manuscript" / "config.yaml"
 
 # Mirror of the script constants (scripts/run_*.py).
 BUDGET = 60
 _OBJECTIVE_KW = {"dimensions": 4, "noise_scale": 0.02}
 
 # Manuscript display precision: comparison table rounds reported to 4 dp,
-# ablation table to 5 dp (manuscript/03_results.md:15-16, 30-34).
+# ablation table to 5 dp (docs/manuscript/03_results.md:15-16, 30-34).
 _REPORTED_FULL = 0.0012065640438283457  # full/coordinated reported_metric
 _NO_CONF_FULL = 0.015645836069054717  # "no confirmation" reported_metric
 

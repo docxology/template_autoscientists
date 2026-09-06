@@ -8,8 +8,8 @@ The objective is a pure function of `(params, seed)`, and the coordination loop 
 
 ```bash
 # Regenerate the matched-budget comparison and the ablation
-uv run python projects/templates/template_autoscientists/scripts/run_search_comparison.py
-uv run python projects/templates/template_autoscientists/scripts/run_ablation.py
+uv run python scripts/run_search_comparison.py
+uv run python scripts/run_ablation.py
 ```
 
 ## Tests and coverage
@@ -18,8 +18,8 @@ The project carries its own test suite under `tests/`, run as a standalone per-p
 
 ```bash
 # Project test suite with the per-project coverage gate
-uv run pytest projects/templates/template_autoscientists/tests/ \
-    --cov=projects/templates/template_autoscientists/src --cov-fail-under=90
+uv run pytest tests/ \
+    --cov=src --cov-fail-under=90
 ```
 
 The deterministic core is tested to full coverage. The live language-model path is excluded from the coverage gate (`# pragma: no cover`) because it requires an external service.
@@ -34,7 +34,7 @@ ollama serve
 ollama pull hermes3
 
 # Run the live round-trip test
-uv run pytest projects/templates/template_autoscientists/tests/test_hermes_live.py \
+uv run pytest tests/test_hermes_live.py \
     -m requires_ollama -v
 ```
 
