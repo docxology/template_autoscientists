@@ -4,7 +4,7 @@ Technical reference for the deterministic AutoScientists exemplar. Companion to
 [README.md](README.md). All business logic lives in `src/`; `scripts/` are thin
 orchestrators that import from `src/`, run the loop, and write figures/JSON.
 
-Decision memory and verifier hardening follow [`docs/rules/memory_and_decision_records.md`](../../../docs/rules/memory_and_decision_records.md): use nearby `WHY:` comments only for surprising local choices, keep volatile counts generated, and add negative controls for verifier-like gates.
+Decision memory and verifier hardening follow the template monorepo's `docs/rules/memory_and_decision_records.md` (monorepo-only path, absent from this mirror): use nearby `WHY:` comments only for surprising local choices, keep volatile counts generated, and add negative controls for verifier-like gates.
 
 ## Module map (`src/`)
 
@@ -71,7 +71,7 @@ re-probes. Two figures: `ablation.png` (metric/noise) and
   boundary is `# pragma: no cover`; Protocol stub bodies (`...`) are excluded.
 - **Thin orchestrators**: scripts never implement algorithms; they import from
   `src/`, plot, and print output paths for manifest collection.
-- **Qualified-name pipeline invocation**: render via
+- **Qualified-name pipeline invocation**: in the template monorepo only, render via
   `--project templates/template_autoscientists` (see README).
 
 #
@@ -84,4 +84,4 @@ quick reference commands, and pitfalls.
 
 # Publishing
 
-- [Publishing guide](../../../docs/guides/publishing-guide.md) · [Publishing module reference](../../../infrastructure/publishing/README.md) · [Zenodo DOI strategy](../../../docs/guides/zenodo-doi-strategy.md) · [Archival targets](../../../docs/maintenance/archival-targets.md)
+These guides live in the template monorepo (`docxology/template`) rather than in this standalone mirror, which ships only [`STANDALONE.md`](STANDALONE.md) plus [`docs/manuscript/config.yaml`](docs/manuscript/config.yaml): `docs/guides/publishing-guide.md`, `infrastructure/publishing/README.md`, `docs/guides/zenodo-doi-strategy.md`, `docs/maintenance/archival-targets.md`.

@@ -15,12 +15,12 @@ full agentic system. The deterministic core is fully tested; a live
 Use this template when you need to **isolate and measure agent-coordination
 mechanisms**: coordinated teams vs single-thread baselines under matched
 budgets, deterministic ablation studies, and honest per-mechanism effect
-reporting (including nulls). Choose
-[`template_autoresearch_project`](../template_autoresearch_project/) instead
-if your focus is end-to-end AutoResearch **loop infrastructure** (evidence
-registries, review gates, artifact integrity) rather than coordination
-primitives. Full roster:
-[`projects/AGENTS.md`](../../AGENTS.md#permanent-canonical-exemplars).
+reporting (including nulls). Choose the sibling `template_autoresearch_project`
+exemplar instead if your focus is end-to-end AutoResearch **loop
+infrastructure** (evidence registries, review gates, artifact integrity) rather
+than coordination primitives. Full roster: `projects/AGENTS.md` in the
+[`docxology/template`](https://github.com/docxology/template) monorepo —
+monorepo-only paths do not resolve in this standalone mirror.
 
 ## Publication and rendering
 
@@ -133,11 +133,14 @@ uv run pytest tests \
   --cov=src --cov-fail-under=90
 ```
 
-**Full pipeline render (qualified name required).** This exemplar lives under
-`projects/templates/`, so the pipeline must be invoked with the *qualified*
-project name — a bare name fails environment setup:
+**Full pipeline render (template monorepo only).** `scripts/runner/` and
+`scripts/pipeline/` are monorepo-root paths and do not exist in this standalone
+repository. In the monorepo this exemplar lives under `projects/templates/`, so
+the pipeline must be invoked with the *qualified* project name — a bare name
+fails environment setup:
 
 ```bash
+# from the docxology/template monorepo root
 uv run python scripts/runner/execute_pipeline.py --project templates/template_autoscientists --core-only
 ```
 
@@ -180,4 +183,4 @@ manuscript under [`docs/manuscript/`](docs/manuscript/) for the full write-up.
 - Forward backlog: [`TODO.md`](TODO.md).
 - Copy-and-customize config: [`docs/manuscript/config.yaml.example`](docs/manuscript/config.yaml.example).
 - Project validation: `uv run pytest tests/ --cov=src --cov-fail-under=90`.
-- Repo drift validation: `uv run python scripts/audit/check_template_drift.py --strict`.
+- Repo drift validation (template monorepo only — this repository has no `scripts/audit/`): `uv run python scripts/audit/check_template_drift.py --strict`.
