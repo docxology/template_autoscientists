@@ -14,9 +14,7 @@ Rendered PDF deliverables, including <name>_combined.pdf and compile logs.
 
 ## Invariants
 
-- Local-only path under `projects/ongoing/` (root `.gitignore` rule
-  `projects/*`) — never commit. Repo-wide policy: see
-  `/Volumes/external_drive/Git/template/projects/ongoing/AGENTS.md`.
+- Repository-wide policy for template projects is maintained in the template repository, not restated here.
 - Generated outputs in these trees are regenerable via the repo's canonical
   pipeline; do not hand-edit artifacts to "fix" results.
 - This repo lives in the public docxology mirror — anything written here
