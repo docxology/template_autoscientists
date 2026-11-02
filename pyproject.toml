@@ -13,7 +13,7 @@ description = "Deterministic reference implementation of the AutoScientists self
 authors = [
     {name = "Daniel Ari Friedman", email = "daniel@activeinference.institute"}
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "numpy>=2.0",
     "matplotlib>=3.10",
