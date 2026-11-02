@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.10" />
+  <meta name="generator" content="pandoc 3.13" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Daniel Ari Friedman" />
+  <meta name="description" content="Ablatable Mechanisms and Measurable Noise-Robustness under a Matched Experiment Budget" />
   <title>A Deterministic Testbed for Self-Organizing Agent-Team
 Coordination</title>
   <style>
@@ -12,7 +14,10 @@ Coordination</title>
     */
     html {
       color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
       background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
     }
     body {
       margin: 0 auto;
@@ -37,12 +42,16 @@ Coordination</title>
     }
     @media print {
       html {
-        background-color: white;
+        color-scheme: light only;
       }
-      body {
+      html, body, pre, code {
         background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
         color: black;
-        font-size: 12pt;
+      }
+      pre, code {
+        padding: 0;
       }
       p, h2, h3 {
         orphans: 3;
@@ -55,11 +64,8 @@ Coordination</title>
     p {
       margin: 1em 0;
     }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+    a, a:visited {
+      color: inherit;
     }
     img {
       max-width: 100%;
@@ -88,8 +94,11 @@ Coordination</title>
     blockquote {
       margin: 1em 0 1em 1.7em;
       padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
       color: #606060;
+      color: light-dark(#606060, #b6b6b6);
     }
     code {
       white-space: pre-wrap;
@@ -113,7 +122,7 @@ Coordination</title>
     }
     hr {
       border: none;
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
       height: 1px;
       margin: 1em 0;
     }
@@ -130,11 +139,11 @@ Coordination</title>
     }
     tbody {
       margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
     }
     th {
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
       padding: 0.25em 0.5em 0.25em 0.5em;
     }
     td {
@@ -238,10 +247,93 @@ Coordination</title>
     code span.va { color: #19177c; } /* Variable */
     code span.vs { color: #4070a0; } /* VerbatimString */
     code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
-  <script defer=""
-  src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js"
-  type="text/javascript"></script>
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <script data-template-mathjax-config>
+window.MathJax = window.MathJax || {};
+window.MathJax.chtml = Object.assign({}, window.MathJax.chtml, {
+  fontURL: "https://cdn.jsdelivr.net/npm/@mathjax/mathjax-newcm-font@4.0.0/chtml/woff2",
+  dynamicPrefix: "https://cdn.jsdelivr.net/npm/@mathjax/mathjax-newcm-font@4.0.0/chtml/dynamic"
+});
+var templateMathOutput = window.MathJax.output || {};
+window.MathJax.output = Object.assign({}, templateMathOutput, {
+  displayOverflow: "linebreak",
+  linebreaks: Object.assign({}, templateMathOutput.linebreaks, {
+    inline: true,
+    width: "100%",
+    lineleading: 0.5
+  })
+});
+window.normalizeTemplateMathJaxAria = function () {
+  document.querySelectorAll("mjx-speech[aria-roledescription]").forEach(function (node) {
+    var roleDescription = node.getAttribute("aria-roledescription") || "";
+    if (/[-]/.test(roleDescription)) {
+      node.setAttribute("aria-roledescription", "mathematical expression");
+    }
+  });
+};
+window.MathJax.startup = Object.assign({}, window.MathJax.startup, {
+  ready: function () {
+    var measuredWidth = document.documentElement.clientWidth;
+    var reflowQueued = false;
+    window.MathJax.startup.defaultReady();
+    window.templateMathJaxReflowPromise = window.MathJax.startup.promise.then(
+      window.normalizeTemplateMathJaxAria
+    );
+    function reflowDisplayMath() {
+      if (reflowQueued || document.documentElement.clientWidth === measuredWidth) return;
+      reflowQueued = true;
+      window.templateMathJaxReflowPromise = window.templateMathJaxReflowPromise
+        .catch(function () { /* A later resize may retry a failed render. */ })
+        .then(async function () {
+          var width = document.documentElement.clientWidth;
+          try {
+            // MathJax 4 MathItem.STATE.METRICS = 110. The default RERENDER
+            // state retains old container metrics and cannot reflow on zoom.
+            await window.MathJax.startup.document.rerenderPromise(110);
+            window.normalizeTemplateMathJaxAria();
+            window.templateMathJaxReflowError = null;
+          } catch (error) {
+            window.templateMathJaxReflowError = String(error);
+            console.error("MathJax viewport reflow failed", error);
+            throw error;
+          } finally {
+            measuredWidth = width;
+            reflowQueued = false;
+          }
+        })
+        .then(reflowDisplayMath);
+      // Keep failure observable to callers without an unhandled rejection.
+      window.templateMathJaxReflowPromise.catch(function () {});
+    }
+    window.addEventListener("resize", reflowDisplayMath);
+    // Also cover a resize that happened during the initial asynchronous render.
+    window.templateMathJaxReflowPromise.then(reflowDisplayMath);
+  }
+});
+</script>
+<script defer=""
+  type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-chtml.js" integrity="sha384-2BWc4dVaHADUocwKrUrK9u3iDwHxVMKXWEcoRmUkXYSFKhAsgVAYClu9ydNuo5Oz" crossorigin="anonymous"></script>
+
+<link data-template-favicon rel="icon" href="favicon.ico">
 
 <style>
 :root {
@@ -260,11 +352,6 @@ Coordination</title>
     --web-border: #2a3447;
   }
 }
-/* Numbered theorem-like environments. Pandoc's HTML writer drops raw-LaTeX
-   \newtheorem blocks, so WebRenderer rewrites them (web-only) into
-   .theorem-box Divs; this styles them as boxed, numbered blocks that read like
-   the PDF's theorem environments. The PDF path is unchanged (it uses the LaTeX
-   preamble). */
 .theorem-box {
   border-left: 4px solid var(--brand-1);
   background: var(--web-surface);
@@ -275,39 +362,121 @@ Coordination</title>
 .theorem-box.definition { border-left-style: dashed; }
 .theorem-box > p:first-child { margin-top: 0; }
 .theorem-box > p:last-child { margin-bottom: 0; }
+.figure-long-description {
+  border: 1px solid var(--web-border);
+  border-radius: 4px;
+  margin-block: 0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+.figure-long-description > summary { cursor: pointer; font-weight: 700; }
+.figure-long-description > p { max-width: 80ch; overflow-wrap: anywhere; }
+.figure-exact-values { max-width: 80ch; overflow-wrap: anywhere; }
+code { overflow-wrap: anywhere; word-break: break-word; }
+pre {
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+pre code { overflow-wrap: inherit; white-space: inherit; word-break: inherit; }
+div.sourceCode { max-width: 100%; overflow: visible; }
+pre.sourceCode { background: #2c3e50; color: #ecf0f1; }
+pre.sourceCode code,
+pre.sourceCode code span { color: inherit; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+mjx-container[display="true"] { max-width: 100%; overflow: visible; }
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+.table-scroll:focus-visible {
+  outline: 3px solid var(--brand-1);
+  outline-offset: 3px;
+}
+.table-scroll > table { margin-block: 0; display: table; min-width: 100%; width: 100%; }
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
 html {
+  max-width: 100%;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
   font-family: 'Liberation Serif', 'Times New Roman', serif;
   line-height: 1.6;
-  width: 100vw;
+  width: min(100%, 800px);
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   background-color: #f8f8f8;
   color: #1a1a1a;
+  overflow-wrap: break-word;
   overflow-x: hidden;
+  overflow-x: clip;
+}
+
+main,
+nav,
+section,
+article,
+figure,
+figcaption {
+  min-width: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 0.65rem 0.9rem;
+  transform: translateY(-120%);
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-family: sans-serif;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.skip-link:visited {
+  color: #ffffff;
+}
+
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
 }
 
 @media (max-width: 600px) {
   body {
-    width: 100vw;
-    max-width: 100vw;
-    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+    padding: 16px;
+  }
+
+  figure img {
+    width: 100% !important;
   }
 }
 
 @media (max-width: 800px) {
   body {
-    width: 390px;
+    width: 100%;
     max-width: 100vw;
-    margin: 0;
+    margin: 0 auto;
   }
 }
 
@@ -323,6 +492,8 @@ code {
   padding: 2px 4px;
   border-radius: 3px;
   font-family: 'Liberation Mono', 'Courier New', monospace;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 pre {
@@ -330,13 +501,77 @@ pre {
   color: #ecf0f1;
   padding: 15px;
   border-radius: 5px;
-  overflow-x: auto;
+  max-width: 100%;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  overflow-wrap: inherit;
+  white-space: inherit;
+  word-break: inherit;
+}
+
+div.sourceCode {
+  max-width: 100%;
+  overflow: visible;
+}
+
+pre.sourceCode {
+  background: #2c3e50;
+  color: #ecf0f1;
+}
+
+pre.sourceCode code,
+pre.sourceCode code span {
+  color: inherit;
+}
+
+pre > code.sourceCode {
+  white-space: pre-wrap;
+}
+
+pre > code.sourceCode > span {
+  display: block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 table {
   border-collapse: collapse;
   width: 100%;
   margin: 20px 0;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scrollbar-gutter: stable;
+}
+
+.table-scroll:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 3px;
+}
+
+.table-scroll > table {
+  margin-block: 0;
+  display: table;
+  min-width: 100%;
+  width: 100%;
+}
+
+figure {
+  max-width: 100%;
+  margin: 1.5rem 0;
 }
 
 th, td {
@@ -346,8 +581,17 @@ th, td {
 }
 
 th {
-  background-color: #3498db;
+  background-color: #1f6f8b;
   color: white;
+}
+
+/* Preserve a complete inline-code header within the table's scroll region. */
+th code {
+  color: inherit;
+  background-color: transparent;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 img {
@@ -362,17 +606,24 @@ img {
 }
 
 a {
-  color: red;
-  text-decoration: none;
+  color: #b91c1c;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
   overflow-wrap: anywhere;
 }
 
 a:visited {
-  color: red;
+  color: #8f1d1d;
 }
 
 a:hover {
-  text-decoration: underline;
+  text-decoration-thickness: 0.14em;
+}
+
+a:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 3px;
 }
 
 .toc {
@@ -382,14 +633,31 @@ a:hover {
   margin-bottom: 30px;
 }
 
-.toc a {
-  color: red;
+.toc a,
+#TOC a {
+  color: #b91c1c;
+  display: inline-block;
+  min-height: 28px;
+  line-height: 1.5;
+  padding-block: 2px;
+}
+
+.toc li,
+#TOC li {
+  margin-block: 1px;
 }
 
 .math {
   text-align: center;
   margin: 20px 0;
   font-size: 1.1em;
+}
+
+mjx-container[display="true"] {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+  padding-bottom: 0.25rem;
 }
 
 .figure {
@@ -405,21 +673,77 @@ a:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+/* A reading column keeps prose comfortable, but dense scientific figures need
+   a larger inspection surface.  The rendered image remains responsive and the
+   explicit link opens its source-resolution asset without changing the PDF. */
+.figure-full-size-link {
+  color: inherit;
+  display: block;
+  max-width: 100%;
+  text-align: center;
+}
+
+.figure-full-size-link img {
+  cursor: zoom-in;
+  margin-bottom: 0.45rem;
+}
+
+.figure-full-size-label {
+  color: #1f6f8b;
+  display: inline-block;
+  font-family: sans-serif;
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  text-decoration: underline;
+  text-underline-offset: 0.14em;
+}
+
+.figure-full-size-link:focus-visible {
+  outline: 3px solid #1f6f8b;
+  outline-offset: 4px;
+}
+
+@media (min-width: 1000px) {
+  /* Wide figure links stay within the viewport but extend beyond the prose
+     column. Do not clip their labels at the narrower body boundary. */
+  body {
+    overflow-x: visible;
+  }
+
+  .figure-full-size-link {
+    left: 50%;
+    max-width: none;
+    position: relative;
+    transform: translateX(-50%);
+    width: min(1080px, calc(100vw - 3rem));
+  }
+}
+
 .figure-caption {
   font-style: italic;
-  color: #7f8c8d;
+  color: #4b5563;
   margin-top: 10px;
   text-align: center;
 }
 
+.figure-long-description,
+.figure-exact-values {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
 </style>
+<script data-template-source-font-loader src="assets/source-web-fonts.js"></script>
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <header id="title-block-header">
 <h1 class="title">A Deterministic Testbed for Self-Organizing Agent-Team
 Coordination</h1>
 <p class="subtitle">Ablatable Mechanisms and Measurable Noise-Robustness
 under a Matched Experiment Budget</p>
+<p class="author">Daniel Ari Friedman</p>
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
@@ -482,9 +806,9 @@ class="toc-section-number">6</span> Reproducibility</a>
 class="toc-section-number">6.1</span> Deterministic core</a></li>
 <li><a href="#tests-and-coverage" id="toc-tests-and-coverage"><span
 class="toc-section-number">6.2</span> Tests and coverage</a></li>
-<li><a href="#the-live-hermes-agent-opt-in"
-id="toc-the-live-hermes-agent-opt-in"><span
-class="toc-section-number">6.3</span> The live Hermes agent
+<li><a href="#bounded-local-coordination-opt-in"
+id="toc-bounded-local-coordination-opt-in"><span
+class="toc-section-number">6.3</span> Bounded local coordination
 (opt-in)</a></li>
 <li><a href="#shared-estimator" id="toc-shared-estimator"><span
 class="toc-section-number">6.4</span> Shared estimator</a></li>
@@ -512,12 +836,15 @@ class="toc-section-number">8</span> Conclusion</a></li>
 class="toc-section-number">9</span> References</a></li>
 </ul>
 </nav>
+<main id="main-content" tabindex="-1">
 <h1 data-number="1" id="sec:abstract"><span
 class="header-section-number">1</span> Abstract</h1>
-<p>Recent work on <em>AutoScientists</em> [gao2026autoscientists]
-coordinates self-organizing teams of language-model agents through a
-small set of shared mechanisms: a champion-and-experiment-log shared
-state, a registry of retired dead-end directions, effect-size ranking of
+<p>Recent work on <em>AutoScientists</em> <span class="citation"
+data-cites="gao2026autoscientists">(<a href="#ref-gao2026autoscientists"
+role="doc-biblioref">Gao et al. 2026</a>)</span> coordinates
+self-organizing teams of language-model agents through a small set of
+shared mechanisms: a champion-and-experiment-log shared state, a
+registry of retired dead-end directions, effect-size ranking of
 candidate directions, noise-band confirmation of claimed improvements,
 and stagnation-driven reorganization of teams. This exemplar provides a
 deterministic, standalone reference implementation of those mechanisms
@@ -548,8 +875,8 @@ class="math inline">\(60\)</span> experiments — the same clean answer,
 reached with less waste. A per-mechanism ablation isolates each
 component’s contribution, and the language-model proposer is a clean
 plug-in seam: a deterministic rule-based agent drives the reproducible
-figures, and a live Hermes agent (served by Ollama) can be swapped in
-without touching the coordination loop.</p>
+figures, and a bounded local model proposer (served by Ollama) can be
+swapped in without touching the coordination loop.</p>
 <hr />
 <h1 data-number="2" id="sec:introduction"><span
 class="header-section-number">2</span> Introduction</h1>
@@ -558,14 +885,16 @@ class="header-section-number">2.1</span> Motivation</h2>
 <p>Long-running scientific experimentation — tuning a model, searching a
 design space, optimizing a noisy objective over many trials — has become
 a target for multi-agent language-model systems. <em>AutoScientists</em>
-[gao2026autoscientists] frames this as a coordination problem: several
-agent teams share a running record of what has been tried, retire
-directions that repeatedly fail, prioritize directions with large
-observed effects, confirm claimed improvements against evaluation noise,
-and reorganize when progress stalls. These are appealing ideas, but they
-are easy to <em>describe</em> and hard to <em>attribute</em>: when a
-coordinated system performs well, which mechanism deserves the credit,
-and how much of an apparent gain is simply noise?</p>
+<span class="citation" data-cites="gao2026autoscientists">(<a
+href="#ref-gao2026autoscientists" role="doc-biblioref">Gao et al.
+2026</a>)</span> frames this as a coordination problem: several agent
+teams share a running record of what has been tried, retire directions
+that repeatedly fail, prioritize directions with large observed effects,
+confirm claimed improvements against evaluation noise, and reorganize
+when progress stalls. These are appealing ideas, but they are easy to
+<em>describe</em> and hard to <em>attribute</em>: when a coordinated
+system performs well, which mechanism deserves the credit, and how much
+of an apparent gain is simply noise?</p>
 <p>This exemplar exists to make those questions answerable on a small,
 fully reproducible artifact. It is one of a family of research-project
 templates in this repository, each pairing a tested computational core
@@ -628,15 +957,17 @@ class="math inline">\(36\)</span> of <span
 class="math inline">\(60\)</span> experiments, with the clean optimum
 unchanged.</li>
 <li><strong>A language-model plug-in seam</strong>
-(<code>Proposer</code> protocol) that lets a live Hermes agent replace
-the deterministic proposer without modifying the coordination loop,
-exercised by an opt-in <code>requires_ollama</code> test.</li>
+(<code>Proposer</code> protocol) that lets a bounded local model
+proposer replace the deterministic proposer without modifying the
+coordination loop, exercised by an opt-in <code>requires_ollama</code>
+test.</li>
 </ol>
-<p>The remainder of the paper specifies the mechanisms (sec. 3), reports
-the matched-budget comparison and the per-mechanism ablation with the
-numbers our scripts actually produce (sec. 4), states the scope and
-limits of those claims (sec. 7), and documents reproduction
-(sec. 6).</p>
+<p>The remainder of the paper specifies the mechanisms (sec. <a
+href="#sec:methodology">3</a>), reports the matched-budget comparison
+and the per-mechanism ablation with the numbers our scripts actually
+produce (sec. <a href="#sec:results">4</a>), states the scope and limits
+of those claims (sec. <a href="#sec:scope">7</a>), and documents
+reproduction (sec. <a href="#sec:reproducibility">6</a>).</p>
 <hr />
 <h1 data-number="3" id="sec:methodology"><span
 class="header-section-number">3</span> Methodology</h1>
@@ -655,20 +986,16 @@ reproducible.</p>
 <p>For a parameter vector <span class="math inline">\(x \in
 \mathbb{R}^d\)</span> with optimum at the origin, the
 <strong>clean</strong> (noise-free) value is</p>
-<p><span class="math display">\[
-f(x) = -\sum_{i=1}^{d} \left[ x_i^2 + \rho\,\bigl(1 - \cos(2\pi
-x_i)\bigr) \right],
-\]</span></p>
+<p><span class="math display">\[f(x) = -\sum_{i=1}^{d} \left[ x_i^2 +
+\rho\,\bigl(1 - \cos(2\pi x_i)\bigr) \right],\]</span></p>
 <p>a smooth global peak at <span class="math inline">\(x = 0\)</span>
 (where <span class="math inline">\(f = 0\)</span>) minus shallow cosine
 ripples of amplitude <span class="math inline">\(\rho\)</span> that
 create deceptive local optima along each axis. Higher is better. A
 single noisy <strong>observation</strong> adds a seeded, zero-centred
 perturbation:</p>
-<p><span class="math display">\[
-\tilde{f}(x, s) = f(x) + \varepsilon(x, s), \qquad |\varepsilon| \le
-\sigma_{\text{noise}},
-\]</span></p>
+<p><span class="math display">\[\tilde{f}(x, s) = f(x) + \varepsilon(x,
+s), \qquad |\varepsilon| \le \sigma_{\text{noise}},\]</span></p>
 <p>where <span class="math inline">\(\varepsilon(x, s)\)</span> is
 derived deterministically from a hash of the rounded <span
 class="math inline">\(x\)</span> and the seed <span
@@ -682,7 +1009,7 @@ class="math inline">\(\sigma_{\text{noise}} = 0.02\)</span>.</p>
 class="header-section-number">3.2</span> Shared state</h2>
 <p>The deterministic core mirrors the AutoScientists shared state: an
 immutable <strong>champion</strong> record <span
-class="math inline">\(p^\*\)</span> (parameters, metric, originating
+class="math inline">\(p^{\ast}\)</span> (parameters, metric, originating
 experiment index) plus an append-only <strong>experiment log</strong>
 <span class="math inline">\(L\)</span> of structured outcomes. Recording
 an outcome appends it to <span class="math inline">\(L\)</span> and
@@ -752,9 +1079,9 @@ class="header-section-number">3.4</span> The coordination loop</h2>
     if reorganization is on and the search is stagnant, re-partition teams</code></pre>
 <p>Every mechanism is gated by a boolean in <code>SearchConfig</code>.
 With all <em>structural</em> coordination toggles off and a single team
-— confirmation stays on, so the baseline is itself noise-honest (sec. 5)
-— the loop reduces exactly to the single-thread baseline, which is what
-makes the ablation a clean subtraction.</p>
+— confirmation stays on, so the baseline is itself noise-honest (sec. <a
+href="#sec:setup">5</a>) — the loop reduces exactly to the single-thread
+baseline, which is what makes the ablation a clean subtraction.</p>
 <h2 data-number="3.5" id="the-proposer-seam"><span
 class="header-section-number">3.5</span> The proposer seam</h2>
 <p>The loop depends only on a <code>Proposer</code> protocol —
@@ -767,15 +1094,17 @@ of them. Two <em>real</em> implementations are provided (no mocks):</p>
 policy that probes the next assigned axis in the direction that most
 recently improved it, defaulting toward the origin. It drives every
 rendered figure and test.</li>
-<li><strong><code>HermesProposer</code></strong> — renders the shared
-state to a prompt, asks a Hermes model (served by Ollama) for the next
-<code>(axis, step, rationale)</code> as JSON, and parses the reply,
-rejecting any axis outside the assigned set. Its infrastructure-LLM
-import is lazy, so the deterministic core tests and renders with no
-Ollama dependency.</li>
+<li><strong><code>LiveProposer</code></strong> — sends the current
+public shared state and assigned axes to an explicitly selected
+installed local Ollama model. It accepts only finite bounded numeric
+proposals, checks installed model identity across generations and both
+arms, and retains provider request/response bytes, state, outcomes, and
+budgets.</li>
 </ul>
-<p>Swapping one for the other is the only change needed to turn the
-deterministic reference run into a live agentic one.</p>
+<p>The explicit live comparison runs both coordinated and single-agent
+arms under equal ceilings. Its scoped local numerical results are
+separate from the deterministic manuscript figures and do not establish
+general scientific-agent superiority.</p>
 <hr />
 <h1 data-number="4" id="sec:results"><span
 class="header-section-number">4</span> Results</h1>
@@ -787,14 +1116,15 @@ re-running the scripts reproduces them exactly. The budget is fixed at
 configuration.</p>
 <h2 data-number="4.1" id="matched-budget-comparison"><span
 class="header-section-number">4.1</span> Matched-budget comparison</h2>
-<p>fig. 1 plots the champion trajectory of the coordinated three-team
-configuration against the single-thread baseline over the shared <span
+<p>fig. <a href="#fig:comparison">1</a> plots the champion trajectory of
+the coordinated three-team configuration against the single-thread
+baseline over the shared <span
 class="math inline">\(60\)</span>-experiment budget. The two curves
 track each other and converge to the same value.</p>
 <figure id="fig:comparison">
-<img src="../figures/search_comparison.png"
-alt="Figure 1: Champion metric (higher is better) versus experiment index for coordinated teams (solid) and the single-thread baseline (dashed) under a matched experiment budget. Coordinated teams partition the same sequential budget as the baseline rather than adding parallel compute, so this is a robustness/efficiency comparison, not a speedup. Produced by run_search_comparison.py." />
-<figcaption aria-hidden="true">Figure 1: Champion metric (higher is
+<a class="figure-full-size-link" href="figures/search_comparison.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 1, Champion metric (higher is better) versus experiment index"><img src="figures/search_comparison.png"
+alt="Champion-metric trajectories under a matched sequential experiment budget. The solid coordinated-teams line contains 36 points, starting at -8.6627 and ending at 0.0012; The dashed single-thread baseline line contains 60 points, starting at -8.6627 and ending at 0.0012. Values are reported noisy champion metrics; line length can reflect early stopping and does not encode wall-clock speed." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 1: Champion metric (higher is
 better) versus experiment index for coordinated teams (solid) and the
 single-thread baseline (dashed) under a matched experiment budget.
 Coordinated teams partition the same sequential budget as the baseline
@@ -804,7 +1134,7 @@ comparison, not a speedup. Produced by
 </figure>
 <p>The summary in <code>output/data/search_comparison.json</code>
 reports the decisive quantities:</p>
-<table style="width:100%;">
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table style="width:99%;" data-responsive-table="true">
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 16%" />
@@ -841,7 +1171,7 @@ reports the decisive quantities:</p>
 <td><span class="math inline">\(36\)</span></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p>Both configurations reach the <strong>same clean ground-truth
 optimum</strong> (<span class="math inline">\(0.0000\)</span>, the
 global peak), and the clean-metric advantage of coordination over the
@@ -867,20 +1197,21 @@ the budget is spent, not how good the final answer is.</p>
 class="header-section-number">4.2</span> Per-mechanism ablation</h2>
 <p>The testbed separates two distinct, independently measurable benefits
 — noise robustness and search hygiene — from the mechanisms that do not
-move the needle on this objective. fig. 2 and fig. 3, drawn from
+move the needle on this objective. fig. <a href="#fig:ablation">2</a>
+and fig. <a href="#fig:ablation_efficiency">3</a>, drawn from
 <code>output/data/ablation.json</code>, switch off one mechanism at a
 time starting from the full coordinated configuration.</p>
 <figure id="fig:ablation">
-<img src="../figures/ablation.png"
-alt="Figure 2: Reported versus clean (ground-truth) champion metric for the full configuration and each single-mechanism ablation. A reported-greater-than-clean gap is accepted noise. Removing noise-band confirmation inflates the gap roughly thirteenfold while the clean metric is unchanged. Produced by run_ablation.py." />
-<figcaption aria-hidden="true">Figure 2: Reported versus clean
+<a class="figure-full-size-link" href="figures/ablation.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 2, Reported versus clean (ground-truth) champion metric"><img src="figures/ablation.png"
+alt="Paired horizontal bars compare final reported and clean metrics for 5 configurations: full coordination: reported 0.0012, clean 0.0000; no confirmation: reported 0.0156, clean 0.0000; no dead-end registry: reported 0.0012, clean 0.0000; no effect-size ranking: reported 0.0012, clean 0.0000; no reorganization: reported 0.0012, clean 0.0000. The largest absolute reported-minus-clean gap is 0.0156 for no confirmation. These are outcomes on this synthetic objective, not evidence of general agent performance." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 2: Reported versus clean
 (ground-truth) champion metric for the full configuration and each
 single-mechanism ablation. A reported-greater-than-clean gap is accepted
 noise. Removing noise-band confirmation inflates the gap roughly
 thirteenfold while the clean metric is unchanged. Produced by
 <code>run_ablation.py</code>.</figcaption>
 </figure>
-<table style="width:100%;">
+<div class="table-scroll" role="region" tabindex="0" aria-label="Scrollable data table"><table style="width:99%;" data-responsive-table="true">
 <colgroup>
 <col style="width: 16%" />
 <col style="width: 16%" />
@@ -941,7 +1272,7 @@ thirteenfold while the clean metric is unchanged. Produced by
 <td><span class="math inline">\(0\)</span></td>
 </tr>
 </tbody>
-</table>
+</table></div>
 <p><strong>Confirmation is the load-bearing mechanism for
 honesty.</strong> Removing noise-band confirmation leaves the clean
 metric untouched (the search still lands on the optimum) but inflates
@@ -955,22 +1286,22 @@ confirmation the reported metric stays close to the truth. This is
 exactly the failure mode noise-band confirmation is designed to prevent,
 and the testbed measures its size.</p>
 <p><strong>The dead-end registry is the load-bearing mechanism for
-efficiency.</strong> fig. 3 shows that removing it is the only ablation
-that changes the experiment budget profile: the registry-consulting
-proposer otherwise never re-probes a retired direction (redundant
-re-probes <span class="math inline">\(= 0\)</span>) and halts at <span
-class="math inline">\(36\)</span> experiments once every direction is
-exhausted, while the no-registry configuration burns all <span
-class="math inline">\(60\)</span> experiments and wastes <span
-class="math inline">\(36\)</span> of them re-testing known dead ends.
-Crucially, this hygiene gain leaves the clean metric
-<strong>unchanged</strong> at <span
+efficiency.</strong> fig. <a href="#fig:ablation_efficiency">3</a> shows
+that removing it is the only ablation that changes the experiment budget
+profile: the registry-consulting proposer otherwise never re-probes a
+retired direction (redundant re-probes <span class="math inline">\(=
+0\)</span>) and halts at <span class="math inline">\(36\)</span>
+experiments once every direction is exhausted, while the no-registry
+configuration burns all <span class="math inline">\(60\)</span>
+experiments and wastes <span class="math inline">\(36\)</span> of them
+re-testing known dead ends. Crucially, this hygiene gain leaves the
+clean metric <strong>unchanged</strong> at <span
 class="math inline">\(0.0000\)</span> — the registry buys a leaner
 search, not a better answer.</p>
 <figure id="fig:ablation_efficiency">
-<img src="../figures/ablation_efficiency.png"
-alt="Figure 3: Experiments used and redundant re-probes of retired directions per configuration. Only the dead-end-registry ablation changes the profile: without the registry the search wastes 36 experiments re-exploring known-dead directions and never halts early. Produced by run_ablation.py." />
-<figcaption aria-hidden="true">Figure 3: Experiments used and redundant
+<a class="figure-full-size-link" href="figures/ablation_efficiency.png" target="_blank" rel="noopener" aria-label="Open full-size Figure 3, Experiments used and redundant re-probes of retired directions per configuration."><img src="figures/ablation_efficiency.png"
+alt="Paired horizontal bars compare sequential experiment use and redundant re-probes for 5 configurations: full coordination: 36 used, 0 redundant; no confirmation: 36 used, 0 redundant; no dead-end registry: 60 used, 36 redundant; no effect-size ranking: 36 used, 0 redundant; no reorganization: 36 used, 0 redundant. The largest redundant count is 36 for no dead-end registry. Counts do not encode parallel throughput or wall-clock timing." /><span class="figure-full-size-label" aria-hidden="true">Open full-size figure</span></a>
+<figcaption>Figure 3: Experiments used and redundant
 re-probes of retired directions per configuration. Only the
 dead-end-registry ablation changes the profile: without the registry the
 search wastes <span class="math inline">\(36\)</span> experiments
@@ -1016,19 +1347,20 @@ objective — a result we report rather than obscure.</li>
 class="header-section-number">5</span> Experimental Setup</h1>
 <h2 data-number="5.1" id="objective-and-budget"><span
 class="header-section-number">5.1</span> Objective and budget</h2>
-<p>All experiments optimize the synthetic objective of sec. 3 with <span
-class="math inline">\(d = 4\)</span> dimensions, ripple amplitude <span
-class="math inline">\(\rho = 0.15\)</span>, and per-evaluation noise
-scale <span class="math inline">\(\sigma_{\text{noise}} = 0.02\)</span>.
-The global optimum is the origin, where the clean objective equals <span
+<p>All experiments optimize the synthetic objective of sec. <a
+href="#sec:methodology">3</a> with <span class="math inline">\(d =
+4\)</span> dimensions, ripple amplitude <span class="math inline">\(\rho
+= 0.15\)</span>, and per-evaluation noise scale <span
+class="math inline">\(\sigma_{\text{noise}} = 0.02\)</span>. The global
+optimum is the origin, where the clean objective equals <span
 class="math inline">\(0\)</span>. Every configuration is given the
 <strong>same</strong> budget of <span class="math inline">\(60\)</span>
 sequential experiments; coordinated configurations partition that budget
 across teams.</p>
 <h2 data-number="5.2" id="configurations"><span
 class="header-section-number">5.2</span> Configurations</h2>
-<p>The configurations compared in sec. 4 correspond directly to
-<code>SearchConfig</code> objects:</p>
+<p>The configurations compared in sec. <a href="#sec:results">4</a>
+correspond directly to <code>SearchConfig</code> objects:</p>
 <ul>
 <li><strong>Coordinated teams</strong> — the full configuration: <span
 class="math inline">\(3\)</span> teams, all mechanisms on
@@ -1057,22 +1389,25 @@ class="header-section-number">5.3</span> Proposer</h2>
 <p>The rendered figures and the JSON summaries are produced with
 <code>DeterministicProposer</code>, a rule-based agent that reads the
 shared state and emits a concrete proposal. No mock objects are used
-anywhere. The live <code>HermesProposer</code> path is not part of the
-rendered pipeline; it is exercised separately (see sec. 6).</p>
+anywhere. The bounded local <code>LiveProposer</code> path is not part
+of the rendered pipeline; it is exercised separately (see sec. <a
+href="#sec:reproducibility">6</a>).</p>
 <h2 data-number="5.4" id="outputs"><span
 class="header-section-number">5.4</span> Outputs</h2>
 <p>Two thin orchestrator scripts produce all results:</p>
 <ul>
 <li><code>scripts/run_search_comparison.py</code> →
-<code>../figures/search_comparison.png</code>,
+<code>figures/search_comparison.png</code>,
 <code>output/data/search_comparison.json</code>.</li>
 <li><code>scripts/run_ablation.py</code> →
-<code>../figures/ablation.png</code>,
+<code>figures/ablation.png</code>,
+<code>figures/ablation_efficiency.png</code>,
 <code>output/data/ablation.json</code>.</li>
 </ul>
 <p>Each script imports all computation from <code>src/</code>, runs the
 configurations, and writes a figure plus a machine-readable summary. The
-numbers quoted in sec. 4 are read directly from those JSON files.</p>
+numbers quoted in sec. <a href="#sec:results">4</a> are read directly
+from those JSON files.</p>
 <hr />
 <h1 data-number="6" id="sec:reproducibility"><span
 class="header-section-number">6</span> Reproducibility</h1>
@@ -1099,29 +1434,32 @@ inputs.</p>
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Project test suite with the per-project coverage gate</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest projects/templates/template_autoscientists/tests/ <span class="dt">\</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">--cov</span><span class="op">=</span>projects/templates/template_autoscientists/src <span class="at">--cov-fail-under</span><span class="op">=</span>90</span></code></pre></div>
-<p>The deterministic core is tested to full coverage. The live
-language-model path is excluded from the coverage gate
-(<code># pragma: no cover</code>) because it requires an external
-service.</p>
-<h2 data-number="6.3" id="the-live-hermes-agent-opt-in"><span
-class="header-section-number">6.3</span> The live Hermes agent
+<p>Source coverage includes domain checks and real controlled HTTP
+transport. The opt-in installed-model run is separate evidence and fails
+when its selected capability is missing.</p>
+<h2 data-number="6.3" id="bounded-local-coordination-opt-in"><span
+class="header-section-number">6.3</span> Bounded local coordination
 (opt-in)</h2>
-<p><code>HermesProposer</code> calls a Hermes model served by Ollama. It
-is not part of the rendered pipeline and is exercised only by an opt-in
-test marked <code>requires_ollama</code>:</p>
+<p>The default <code>--mode core</code> preserves the deterministic
+figures. <code>--mode live</code> requires the declared platform SDK and
+an explicitly selected already-installed Ollama model at a literal
+loopback endpoint. Both arms execute 3–6 proposals with equal
+experiment, token and request-time ceilings, and three-seed
+confirmation. Actual token consumption is recorded separately. The JSON
+proposal may alter one assigned axis by a finite nonzero step in
+<code>[-1,1]</code>; code and paths are forbidden.</p>
 <div class="sourceCode" id="cb4"><pre
-class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One-time: start Ollama and pull a Hermes model</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> serve</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> pull hermes3</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Run the live round-trip test</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest projects/templates/template_autoscientists/tests/test_hermes_live.py <span class="dt">\</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">-m</span> requires_ollama <span class="at">-v</span></span></code></pre></div>
-<p>Because the loop depends only on the <code>Proposer</code> protocol,
-swapping <code>DeterministicProposer</code> for
-<code>HermesProposer</code> is the single change needed to turn the
-reproducible reference run into a live agentic one — the coordination
-mechanisms, ablation toggles, and confirmation logic are unchanged.</p>
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python projects/templates/template_autoscientists/scripts/run_search_comparison.py <span class="dt">\</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">--mode</span> live <span class="at">--model</span> llama3.2:1b <span class="at">--endpoint</span> http://127.0.0.1:11434 <span class="dt">\</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">--output-dir</span> output/.pipeline/local_coordination/selected-run</span></code></pre></div>
+<p>The fresh ignored run retains source and active producer hashes,
+installed model digest, every prompt context, exact provider
+request/response text, proposals, observed outcomes and budgets. Null
+and negative differences remain successful contract outcomes. Missing
+capabilities return <code>75</code>; malformed generations or source
+drift return <code>1</code>. No acquisition, paid API, source
+application, or external publication occurs. Full instructions:
+<code>docs/live-coordination.md</code>.</p>
 <h2 data-number="6.4" id="shared-estimator"><span
 class="header-section-number">6.4</span> Shared estimator</h2>
 <p>The noise-band confirmation estimator is generic. A synchronized copy
@@ -1138,8 +1476,10 @@ class="header-section-number">7</span> Scope and Related Work</h1>
 <h2 data-number="7.1" id="what-this-exemplar-claims"><span
 class="header-section-number">7.1</span> What this exemplar claims</h2>
 <ul>
-<li>The five AutoScientists coordination mechanisms
-[gao2026autoscientists] are re-implemented faithfully enough to be
+<li>The five AutoScientists coordination mechanisms <span
+class="citation" data-cites="gao2026autoscientists">(<a
+href="#ref-gao2026autoscientists" role="doc-biblioref">Gao et al.
+2026</a>)</span> are re-implemented faithfully enough to be
 <strong>individually ablatable</strong>, and each is independently
 tested.</li>
 <li>Under a <strong>matched sequential experiment budget</strong>,
@@ -1158,8 +1498,8 @@ class="math inline">\(36\)</span> of <span
 class="math inline">\(60\)</span> experiments, with the clean optimum
 unchanged.</li>
 <li>The <strong>language-model proposer is a clean plug-in
-seam</strong>: a live Hermes agent can replace the deterministic
-proposer without changing the coordination loop.</li>
+seam</strong>: a bounded local model proposer can replace the
+deterministic proposer without changing the coordination loop.</li>
 </ul>
 <h2 data-number="7.2" id="what-this-exemplar-does-not-claim"><span
 class="header-section-number">7.2</span> What this exemplar does
@@ -1177,44 +1517,56 @@ the null effect of effect-size ranking and reorganization on every
 measured quantity are properties of <em>this</em> synthetic objective,
 budget, and deterministic proposer. They illustrate the measurement, not
 a universal constant.</li>
-<li><strong>No agentic-quality claim.</strong> The live Hermes path
-demonstrates that the seam works, not that an LLM proposer outperforms
-the rule-based one.</li>
+<li><strong>No agentic-quality claim.</strong> The bounded local
+coordination path demonstrates that the seam works, not that an LLM
+proposer outperforms the rule-based one.</li>
 </ul>
 <h2 data-number="7.3" id="relationship-to-autoscientists"><span
 class="header-section-number">7.3</span> Relationship to
 AutoScientists</h2>
-<p>The original system [gao2026autoscientists] runs real language-model
-agent teams on real, expensive scientific tasks and reports end-to-end
-performance. This exemplar deliberately strips that to a deterministic
-core so the <em>mechanisms</em> can be attributed and the noise behavior
-measured in isolation. It is a complement — a microscope on the
-coordination primitives — not a reproduction of the full system or its
-empirical results.</p>
+<p>The original system <span class="citation"
+data-cites="gao2026autoscientists">(<a href="#ref-gao2026autoscientists"
+role="doc-biblioref">Gao et al. 2026</a>)</span> runs real
+language-model agent teams on real, expensive scientific tasks and
+reports end-to-end performance. This exemplar deliberately strips that
+to a deterministic core so the <em>mechanisms</em> can be attributed and
+the noise behavior measured in isolation. It is a complement — a
+microscope on the coordination primitives — not a reproduction of the
+full system or its empirical results.</p>
 <h2 data-number="7.4" id="related-context"><span
 class="header-section-number">7.4</span> Related context</h2>
 <p>The confirmation mechanism is an application of standard effect-size
-and standard-error reasoning [cohen1988statistical] to online acceptance
+and standard-error reasoning <span class="citation"
+data-cites="cohen1988statistical">(<a href="#ref-cohen1988statistical"
+role="doc-biblioref">Cohen 1988</a>)</span> to online acceptance
 decisions. The dead-end registry, effect-size ranking, and
 reorganization are coordination heuristics whose lineage runs through
-population- and restart-based search [whitley2001overview]; the
-contribution here is not the heuristics but their honest, ablatable
-measurement. The broader setting — teams of language-model agents
-pursuing a long-running objective — sits within the rapidly growing
-literature on LLM-based autonomous agents [wang2023survey]. Throughout,
-the emphasis on regenerable figures, fixed seeds, and a tested core
-follows the reproducible-research tradition [peng2011reproducible].</p>
+population- and restart-based search <span class="citation"
+data-cites="whitley2001overview">(<a href="#ref-whitley2001overview"
+role="doc-biblioref">Whitley 2001</a>)</span>; the contribution here is
+not the heuristics but their honest, ablatable measurement. The broader
+setting — teams of language-model agents pursuing a long-running
+objective — sits within the rapidly growing literature on LLM-based
+autonomous agents <span class="citation" data-cites="wang2023survey">(<a
+href="#ref-wang2023survey" role="doc-biblioref"><span
+class="nocase">Wang et al.</span> 2024</a>)</span>. Throughout, the
+emphasis on regenerable figures, fixed seeds, and a tested core follows
+the reproducible-research tradition <span class="citation"
+data-cites="peng2011reproducible">(<a href="#ref-peng2011reproducible"
+role="doc-biblioref">Peng 2011</a>)</span>.</p>
 <hr />
 <h1 data-number="8" id="sec:conclusion"><span
 class="header-section-number">8</span> Conclusion</h1>
 <p>This exemplar re-implements the AutoScientists coordination
-mechanisms [gao2026autoscientists] as a deterministic, ablatable testbed
-and reports what they actually do under a fair, matched experiment
-budget. The central methodological commitment is honesty about the
-comparison: coordinated teams partition one sequential budget rather
-than adding parallel compute, so we neither expect nor observe a
-speedup, and we say so. The clean-metric advantage of coordination over
-a single-thread baseline is exactly zero.</p>
+mechanisms <span class="citation" data-cites="gao2026autoscientists">(<a
+href="#ref-gao2026autoscientists" role="doc-biblioref">Gao et al.
+2026</a>)</span> as a deterministic, ablatable testbed and reports what
+they actually do under a fair, matched experiment budget. The central
+methodological commitment is honesty about the comparison: coordinated
+teams partition one sequential budget rather than adding parallel
+compute, so we neither expect nor observe a speedup, and we say so. The
+clean-metric advantage of coordination over a single-thread baseline is
+exactly zero.</p>
 <p>Two results are worth keeping. The first is the noise-robustness
 measurement: by separating the reported champion metric from the clean
 ground-truth metric — possible only because the objective is synthetic —
@@ -1237,18 +1589,18 @@ gated behind a single configuration object, so the ablation is a clean
 subtraction and the testbed extends naturally to harder objectives where
 the structural mechanisms have more to do. Second, the language-model
 proposer is a genuine plug-in seam: the deterministic proposer drives
-the reproducible figures, and a live Hermes agent can replace it without
-touching the coordination loop. The honest-testbed framing is the
-contribution — a small, fully reproducible instrument for attributing
-coordination effects to mechanisms and for distinguishing real gains
-from noise.</p>
+the reproducible figures, and a bounded local model proposer can replace
+it without touching the coordination loop. The honest-testbed framing is
+the contribution — a small, fully reproducible instrument for
+attributing coordination effects to mechanisms and for distinguishing
+real gains from noise.</p>
 <hr />
 <h1 data-number="9" id="sec:references"><span
 class="header-section-number">9</span> References</h1>
 <p>Bibliography lives in <a
-href="references.bib"><code>manuscript/references.bib</code></a> and is
+href="https://github.com/docxology/template/blob/main/projects/templates/template_autoscientists/manuscript/references.bib"><code>manuscript/references.bib</code></a> and is
 read by Pandoc during PDF render. The build pipeline invokes Pandoc with
-<code>--natbib</code>, so every <code>[key]</code> citation in the
+<code>--natbib</code>, so every <code>[@key]</code> citation in the
 manuscript is rewritten to the appropriate
 <code>\cite{}</code>/<code>\citep{}</code>/<code>\citet{}</code> LaTeX
 command and resolved against the bib file.</p>
@@ -1257,5 +1609,38 @@ and contains the required fields per entry type:</p>
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> infrastructure.reference.citation.cli validate <span class="dt">\</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    projects/templates/template_autoscientists/manuscript/references.bib <span class="at">--strict</span></span></code></pre></div>
+<div id="refs" class="references csl-bib-body hanging-indent"
+role="list">
+<div id="ref-cohen1988statistical" class="csl-entry" role="listitem">
+Cohen, Jacob. 1988. <em>Statistical Power Analysis for the Behavioral
+Sciences</em>. 2nd ed. Lawrence Erlbaum Associates.
+</div>
+<div id="ref-gao2026autoscientists" class="csl-entry" role="listitem">
+Gao, Shanghua, Wenhao Fang, and Marinka Zitnik. 2026.
+<span>“<span>AutoScientists</span>: Self-Organizing Agent Teams for
+Long-Running Scientific Experimentation.”</span> <em>arXiv Preprint
+arXiv:2605.28655</em>, ahead of print. <a
+href="https://doi.org/10.48550/arXiv.2605.28655">https://doi.org/10.48550/arXiv.2605.28655</a>.
+</div>
+<div id="ref-peng2011reproducible" class="csl-entry" role="listitem">
+Peng, Roger D. 2011. <span>“Reproducible Research in Computational
+Science.”</span> <em>Science</em> 334 (6060): 1226–27. <a
+href="https://doi.org/10.1126/science.1213847">https://doi.org/10.1126/science.1213847</a>.
+</div>
+<div id="ref-wang2023survey" class="csl-entry" role="listitem">
+<span class="nocase">Wang, Lei, Chen Ma, Xueyang Feng, Zeyu Zhang, Hao
+Yang, et al.</span> 2024. <span>“A Survey on Large Language Model Based
+Autonomous Agents.”</span> <em>Frontiers of Computer Science</em> 18
+(6). <a
+href="https://doi.org/10.1007/s11704-024-40231-1">https://doi.org/10.1007/s11704-024-40231-1</a>.
+</div>
+<div id="ref-whitley2001overview" class="csl-entry" role="listitem">
+Whitley, Darrell. 2001. <span>“An Overview of Evolutionary Algorithms:
+Practical Issues and Common Pitfalls.”</span> <em>Information and
+Software Technology</em> 43 (14): 817–31. <a
+href="https://doi.org/10.1016/S0950-5849(01)00188-4">https://doi.org/10.1016/S0950-5849(01)00188-4</a>.
+</div>
+</div>
+</main>
 </body>
 </html>
