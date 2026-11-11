@@ -57,3 +57,7 @@ No active rows are currently scoped at this size.
 
 Rows remain active until the acceptance command and negative control pass in the same source revision.
 A blocked row is a deliberate boundary, not a skipped success.
+
+## Workflowz review — 2026-11-10
+
+Coverage note: bounded packet review of project guidance, README, existing TODO, runtime/dependency pins, orchestration scripts, and the supplied deterministic-core modules found no concrete improvement with sufficient exact evidence. The live Hermes/Ollama path is explicitly opt-in and coverage-excluded, not a silent production substitute; no mock/fallback concern was established from the supplied excerpts. Re-review on a concrete failure or source change.
