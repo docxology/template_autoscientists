@@ -137,7 +137,7 @@ uv run pytest tests \
 
 **Full pipeline render (template monorepo only).** `scripts/runner/` and
 `scripts/pipeline/` are monorepo-root paths and do not exist in this standalone
-repositories. In the monorepo this exemplar lives under `projects/templates/`, so
+repository. In the monorepo this exemplar lives under `projects/templates/`, so
 the pipeline must be invoked with the *qualified* project name — a bare name
 fails environment setup:
 
@@ -184,5 +184,5 @@ manuscript under [`docs/manuscript/`](docs/manuscript/) for the full write-up.
 
 - Forward backlog: [`TODO.md`](TODO.md).
 - Copy-and-customize config: [`docs/manuscript/config.yaml.example`](docs/manuscript/config.yaml.example).
-- Project validation: `uv run pytest tests/ --cov=src --cov-fail-under=90` .
+- Project validation: `uv run pytest tests/ --cov=src --cov-fail-under=90`.
 - Repo drift validation (template monorepo only — this repository has no `scripts/audit/`): `uv run python scripts/audit/check_template_drift.py --strict`.
