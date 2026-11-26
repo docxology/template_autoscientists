@@ -26,6 +26,9 @@ This file contains LaTeX packages and commands that are automatically injected i
 
 % Code listings
 \usepackage{listings}
+\newtheorem{theorem}{Theorem}
+\newtheorem{remark}{Remark}
+\newtheorem{example}{Example}
 
 % Typography and formatting
 \usepackage{microtype}

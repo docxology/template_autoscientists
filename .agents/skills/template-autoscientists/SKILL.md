@@ -22,24 +22,9 @@ Project-scoped skill for the in-repo exemplar at
 
 ## Quick Reference
 
-Standalone (this repository):
-
-```bash
-# From the repository root
-uv run pytest tests -m "not requires_ollama" --cov=src --cov-fail-under=90
-uv run python scripts/run_search_comparison.py
-uv run python scripts/run_ablation.py
-```
-
-Template monorepo only (`projects/templates/template_autoscientists/`, from the monorepo root):
-
-```bash
-uv run pytest projects/templates/template_autoscientists/tests --cov=projects/templates/template_autoscientists/src --cov-fail-under=90
-uv run python scripts/pipeline/stage_02_analysis.py --project templates/template_autoscientists
-uv run python scripts/pipeline/stage_03_render.py --project templates/template_autoscientists
-uv run python scripts/pipeline/stage_04_validate.py --project templates/template_autoscientists
-uv run python scripts/pipeline/stage_05_copy.py --project templates/template_autoscientists
-```
+Follow the [standalone quick start](../../../docs/quickstart.md) for the
+deterministic comparison, ablation, and coverage gate. Use the
+[pinned manuscript build](../../../docs/manuscript-build.md) for PDF and HTML.
 
 ## Pitfalls
 
@@ -56,5 +41,5 @@ uv run python scripts/pipeline/stage_05_copy.py --project templates/template_aut
 
 - Project contract: [`AGENTS.md`](../../../AGENTS.md)
 - README: [`README.md`](../../../README.md)
-- TODO: [`TODO.md`](../../../TODO.md)
+- TODO: [`docs/backlog.md`](../../../docs/backlog.md)
 - Exemplar roster: `projects/AGENTS.md` in the template monorepo (monorepo-only path, absent here)

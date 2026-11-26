@@ -63,6 +63,11 @@ render:
     docx: false
     epub: false
 
+analysis:
+  scripts:
+    - run_search_comparison.py
+    - run_ablation.py
+
 # LLM features are off by default: the exemplar renders deterministically with
 # no Ollama dependency. The live Hermes proposer is exercised by the opt-in
 # `requires_ollama` test, not the rendered pipeline.

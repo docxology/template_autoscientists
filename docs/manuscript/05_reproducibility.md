@@ -1,45 +1,40 @@
 # Reproducibility {#sec:reproducibility}
 
-Every figure and number in this manuscript is regenerable from a clean checkout with fixed seeds and no network access.
+## Recompute the experiment
 
-## Deterministic core
+The objective is a pure function of the parameter vector and seed. The
+coordination loop receives a fixed objective, proposer policy, and
+configuration. The analysis scripts run that simulation and write the
+comparison and ablation JSON plus their three figures.
 
-The objective is a pure function of `(params, seed)`, and the coordination loop is deterministic given the objective, proposer, and configuration. Re-running the analysis scripts reproduces the figures and the JSON summaries byte-for-byte.
-
-```bash
-# Regenerate the matched-budget comparison and the ablation
-uv run python scripts/run_search_comparison.py
-uv run python scripts/run_ablation.py
+```sh
+uv sync --locked --python 3.13 --extra dev
+uv run --no-sync --python 3.13 python scripts/run_search_comparison.py
+uv run --no-sync --python 3.13 python scripts/run_ablation.py
 ```
 
-## Tests and coverage
+The repository tracks a published output snapshot. A new run recomputes the
+metrics in a disposable checkout. Details such as font rendering can vary
+across software environments.
 
-The project carries its own test suite under `tests/`, run as a standalone per-project gate. There are no mocks anywhere: the `DeterministicProposer`, the synthetic objective, and the registries are all real objects exercised with real numerical inputs.
+## Verify the core and replay contract
 
-```bash
-# Project test suite with the per-project coverage gate
-uv run pytest tests/ \
-    --cov=src --cov-fail-under=90
+```sh
+uv run --no-sync --python 3.13 pytest -q -m 'not requires_ollama' --cov=src --cov-fail-under=90
 ```
 
-The deterministic core is tested to full coverage. The live language-model path is excluded from the coverage gate (`# pragma: no cover`) because it requires an external service.
+The suite checks the deterministic coordination mechanisms and tests the
+published numerical results against fresh computation. The offline transcript
+fixture separately exercises schema and revision checks. Replay returns
+recorded role and content fields after validation. It does not supply the
+proposals used by the comparison or ablation.
 
-## The live Hermes agent (opt-in)
-
-`HermesProposer` calls a Hermes model served by Ollama. It is not part of the rendered pipeline and is exercised only by an opt-in test marked `requires_ollama`:
-
-```bash
-# One-time: start Ollama and pull a Hermes model
-ollama serve
-ollama pull hermes3
-
-# Run the live round-trip test
-uv run pytest tests/test_hermes_live.py \
-    -m requires_ollama -v
-```
-
-Because the loop depends only on the `Proposer` protocol, swapping `DeterministicProposer` for `HermesProposer` is the single change needed to turn the reproducible reference run into a live agentic one — the coordination mechanisms, ablation toggles, and confirmation logic are unchanged.
+The optional Hermes adapter uses a separately served model. Its integration
+test is outside the provider-free build and supplies no measurements to this
+manuscript.
 
 ## Shared estimator
 
-The noise-band confirmation estimator is generic. A synchronized copy lives at `infrastructure.scientific.confirmation` (`confirm_improvement`, `Confirmation`) for reuse by any other project that compares a stochastic metric to a baseline, and is covered by `tests/infra_tests/scientific/test_confirmation.py`. The project keeps its own standalone copy so the exemplar runs self-contained.
+The noise-band confirmation estimator is generic. A synchronized copy lives
+at `infrastructure.scientific.confirmation` for reuse by projects comparing
+a stochastic metric to a baseline. The testbed carries its standalone copy.
