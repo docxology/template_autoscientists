@@ -31,24 +31,28 @@ class FigureSpec:
     filename: str
     caption: str
     generated_by: str
+    alt_text: str
 
 
 FIGURE_SPECS: tuple[FigureSpec, ...] = (
     FigureSpec(
         label="fig:comparison",
         filename="search_comparison.png",
+        alt_text="Two champion trajectories over a shared budget. Both converge to the same value. The coordinated trajectory ends after 36 experiments.",
         caption="Champion metric trajectory under a matched experiment budget.",
         generated_by="scripts/run_search_comparison.py",
     ),
     FigureSpec(
         label="fig:ablation",
         filename="ablation.png",
+        alt_text="Paired reported and clean scores for five configurations. The reported score increases when confirmation is removed, while clean scores stay at zero.",
         caption="Reported versus clean champion metric by coordination mechanism ablation.",
         generated_by="scripts/run_ablation.py",
     ),
     FigureSpec(
         label="fig:ablation_efficiency",
         filename="ablation_efficiency.png",
+        alt_text="Experiment use and redundant re-probes across ablations. Only the run without the dead-end registry uses all 60 experiments and repeats 36 probes.",
         caption="Experiment use and redundant re-probes by coordination mechanism ablation.",
         generated_by="scripts/run_ablation.py",
     ),

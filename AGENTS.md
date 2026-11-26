@@ -52,7 +52,7 @@ two efficiency signals that carry the testbed's honest findings:
 This is the design constraint: **measure and report whatever the numbers say.**
 The dead-end registry buys search hygiene (`redundant_experiments` 36 → 0, early
 halt), never a better final answer (clean metric unchanged). See the table in
-[README.md](README.md#what-it-honestly-shows).
+[the results guide](docs/results.md).
 
 ## Ablation toggles
 
@@ -71,10 +71,9 @@ re-probes. Two figures: `ablation.png` (metric/noise) and
   boundary is `# pragma: no cover`; Protocol stub bodies (`...`) are excluded.
 - **Thin orchestrators**: scripts never implement algorithms; they import from
   `src/`, plot, and print output paths for manifest collection.
-- **Qualified-name pipeline invocation**: in the template monorepo only, render via
-  `--project templates/template_autoscientists` (see README).
+- **Manuscript builds**: the [pinned build](docs/manuscript-build.md) registers the
+  standalone repository under `projects/working/`.
 
-#
 ## Agent skill
 
 A Hermes/agentskills.io-compatible skill for this exemplar lives at

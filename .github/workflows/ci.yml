@@ -17,4 +17,4 @@ jobs:
       - uses: astral-sh/setup-uv@v10.4.0
 
       - name: Test
-        run: uv run --no-progress --extra dev pytest -q
+        run: uv run --no-progress --locked --python 3.13 --extra dev pytest -q -m "not requires_ollama" --cov=src --cov-fail-under=90

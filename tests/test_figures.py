@@ -168,6 +168,7 @@ def test_write_figure_registry_schema_version(tmp_path: Path) -> None:
     payload = json.loads(path.read_text())
     assert payload["schema_version"] == "template-autoscientists-figure-registry-v1"
     assert len(payload["figures"]) == 3  # comparison + ablation + ablation_efficiency
+    assert all(row["alt_text"].strip() for row in payload["figures"])
 
 
 def test_ablation_row_none_experiments_to_target_is_serializable(tmp_path: Path) -> None:

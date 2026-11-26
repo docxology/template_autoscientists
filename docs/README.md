@@ -1,17 +1,17 @@
-# `docs/`
+# AutoScientists documentation
 
-Documentation for the AutoScientists coordination exemplar.
+- [Quick start](quickstart.md) installs the locked environment, runs tests,
+  and reproduces the comparison and ablations locally.
+- [Architecture](architecture.md) describes the search loop and the five
+  coordination mechanisms.
+- [Results](results.md) interprets the stored comparison and plots.
+- [Manuscript](manuscript/README.md) indexes the paper’s source sections.
+  The [build guide](manuscript-build.md) regenerates evidence and renders it.
+- [Testing](testing_philosophy.md) and [troubleshooting](troubleshooting.md)
+  cover coverage, replay, and common failures.
+- [Contributor instructions](agent_instructions.md) and [backlog](backlog.md)
+  cover maintenance.
 
-**Contents.** Guides for the deterministic agent-team coordination testbed (the
-search/ranking/confirmation core under `src/`, the thin analysis scripts, and
-the manuscript):
-
-- [`agent_instructions.md`](agent_instructions.md) — operational constraints and workflow for agents working in this project.
-- [`architecture.md`](architecture.md) — coordination loop and module design.
-- [`quickstart.md`](quickstart.md) — copy-paste commands to run the search, ablation, and tests.
-- [`testing_philosophy.md`](testing_philosophy.md) — no-mocks policy and coverage approach.
-- [`troubleshooting.md`](troubleshooting.md) — common symptoms and fixes.
-
-**Contract.** Start with the project [`../AGENTS.md`](../AGENTS.md) and [`../README.md`](../README.md).
-
-See the project [`../AGENTS.md`](../AGENTS.md).
+The simulation uses a synthetic objective and a rule-based proposer. The
+tracked release artifacts preserve a prior run. The bundled transcript is a
+separate synthetic replay fixture used to verify envelope validation.
